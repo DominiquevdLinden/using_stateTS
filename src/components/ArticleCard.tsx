@@ -3,7 +3,7 @@ import React from "react";
 export type Article = {
   id: number;
   title: string;
-  content: string;
+  body: string;
 };
 
 type Props = {
@@ -14,7 +14,7 @@ export default function ArticleCard({ article }: Props) {
   return (
     <div className="Article">
       <h2>{article.title}</h2>
-      <p>{article.content}</p>
+      <p>{article.body}</p>
     </div>
   );
 }

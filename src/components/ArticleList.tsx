@@ -1,33 +1,43 @@
-import React, { useState } from "react";
+import Timeout from "await-timeout";
+import React, { useEffect, useState } from "react";
 import ArticleCard, { Article } from "./ArticleCard";
+import axios from "axios";
 
 export default function ArticleList() {
-  const [articles, setArticles] = useState<Article[]>([
-    {
-      id: 1,
-      title: "What is React all about?",
-      content:
-        "React is all about one-way data flow, the Virtual DOM, and transpiling JSX.",
-    },
-    {
-      id: 2,
-      title: "A lovely kid",
-      content: "In fact, a kid is also the name of a baby goat!",
-    },
-    {
-      id: 3,
-      title: "On placeholder image URLs",
-      content:
-        "So yeah, you won't be able to look these images up. They're placeholders",
-    },
-  ]);
-  console.log(articles);
+  const [articles, setArticles] = useState<Article[]>();
+
+  useEffect(() => {
+    async function doSomeDataFetching() {
+      console.log("I'm gonna fetch some data!");
+
+      await Timeout.set(2000);
+
+      // Getting back data from the net, through the wire, air, and the ocean:
+      const res = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts?_limit=5"
+      );
+
+      console.log("Got back:", res.data);
+      setArticles(res.data);
+    }
+    doSomeDataFetching();
+  }, []);
+
+  function ClearArticles() {
+    setArticles([]);
+  }
+
   return (
     <div>
       <p>Here's a lovely list of articles, for your reading pleasure:</p>
-      {articles.map((art) => {
-        return <ArticleCard article={art} />;
-      })}
+      {articles ? (
+        articles.map((art, index) => {
+          return <ArticleCard article={art} key={index} />;
+        })
+      ) : (
+        <p>Loading...</p>
+      )}
+      <button onClick={ClearArticles}>Clear notifications</button>
     </div>
   );
 }
